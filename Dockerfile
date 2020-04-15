@@ -54,8 +54,6 @@ RUN apk add --no-cache \
         libxslt \
         libltdl
 
-RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf
-
 COPY --from=builder /usr/local/apache2/modules/mod_auth_mellon.so /usr/local/apache2/modules/mod_auth_mellon.so
 COPY --from=builder /usr/local/lib/liblasso* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libxmlsec1* /usr/local/lib/
