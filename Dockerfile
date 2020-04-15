@@ -62,7 +62,7 @@ LABEL maintainer="jesse@weisner.ca, chriswood.ca@gmail.com"
 LABEL xmlsec_version="1.2.29"
 LABEL lasso_version="2.5.1"
 LABEL mod_auth_mellon_version="0.16.0"
-LABEL build_id="1586986138"
+LABEL build_id="1586992613"
 
 # Add docker-entrypoint script base
 ADD https://github.com/itsbcit/docker-entrypoint/releases/download/v1.5/docker-entrypoint.tar.gz /docker-entrypoint.tar.gz
@@ -86,7 +86,20 @@ ENV DOCKERIZE_ENV production
 ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-amd64 /tini
 RUN chmod +x /tini
 
+COPY 50-copy-config.sh /docker-entrypoint.d/
+
+
 RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf \
+ && mkdir /application /config \
+ && chown root:root \
+        /application \
+        /config \
+        /usr/local/apache2/logs \
+ && chmod 755 /config \
+ && chown -R root:root /usr/local/apache2 \
+ && find /usr/local/apache2/conf -type d -exec chmod 0775 {} \; \
+ && find /usr/local/apache2/conf -type f -exec chmod 0664 {} \;
+
 WORKDIR /application
 
 EXPOSE 8080
