@@ -93,3 +93,4 @@ WORKDIR /application
 EXPOSE 8080
 
 ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
+CMD ["httpd-foreground"]
