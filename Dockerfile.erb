@@ -1,4 +1,64 @@
-FROM busybox
+FROM httpd:2.4-alpine AS builder
+
+WORKDIR /tmp
+
+RUN apk add --no-cache \
+        autoconf \
+        automake \
+        curl-dev \
+        g++ \
+        glib-dev \
+        libtool \
+        libxml2-dev \
+        libxslt-dev \
+        make \
+        perl-dev \
+        py3-six \
+        python \
+        zlib-dev
+
+RUN wget https://www.aleksey.com/xmlsec/download/xmlsec1-<%= image.labels['xmlsec_version'] %>.tar.gz \
+ && tar zxf xmlsec1-<%= image.labels['xmlsec_version'] %>.tar.gz \
+ && cd xmlsec1-<%= image.labels['xmlsec_version'] %> \
+ && ./configure \
+        --enable-soap \
+ && make \
+ && make install
+
+RUN wget https://dev.entrouvert.org/releases/lasso/lasso-<%= image.labels['lasso_version'] %>.tar.gz \
+ && tar zxf lasso-<%= image.labels['lasso_version'] %>.tar.gz \
+ && cd lasso-<%= image.labels['lasso_version'] %> \
+ && ./configure \
+        --with-python=/usr/bin/python3.8 \
+ && make \
+ && make install
+
+RUN wget https://github.com/latchset/mod_auth_mellon/releases/download/<%= image.vars['mam_release'] %>/mod_auth_mellon-<%= image.labels['mod_auth_mellon_version'] %>.tar.gz \
+ && tar xvf mod_auth_mellon-0.16.0.tar.gz \
+ && cd mod_auth_mellon-0.16.0 \
+ && aclocal \
+ && autoheader \
+ && autoconf \
+ && ./configure \
+        --with-apxs2=/usr/local/apache2/bin/apxs \
+ && make \
+ && make install
+
+FROM httpd:2.4-alpine
+
+WORKDIR /
+
+RUN apk add --no-cache \
+        glib \
+        curl \
+        libxslt \
+        libltdl
+
+RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf
+
+COPY --from=builder /usr/local/apache2/modules/mod_auth_mellon.so /usr/local/apache2/modules/mod_auth_mellon.so
+COPY --from=builder /usr/local/lib/liblasso* /usr/local/lib/
+COPY --from=builder /usr/local/lib/libxmlsec1* /usr/local/lib/
 
 <%= snippet('labels', binding) -%>
 
@@ -8,5 +68,8 @@ FROM busybox
 
 <%= snippet('tini', binding) -%>
 
+WORKDIR /application
+
+EXPOSE 8080
+
 ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
-CMD [ "init-loop" ]
