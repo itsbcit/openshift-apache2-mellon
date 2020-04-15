@@ -88,6 +88,7 @@ ENV DOCKERIZE_ENV production
 ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-amd64 /tini
 RUN chmod +x /tini
 
+RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf \
 WORKDIR /application
 
 EXPOSE 8080
