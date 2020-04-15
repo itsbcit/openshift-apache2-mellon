@@ -64,7 +64,7 @@ LABEL maintainer="jesse@weisner.ca, chriswood.ca@gmail.com"
 LABEL xmlsec_version="1.2.29"
 LABEL lasso_version="2.5.1"
 LABEL mod_auth_mellon_version="0.16.0"
-LABEL build_id="1586985586"
+LABEL build_id="1586986138"
 
 # Add docker-entrypoint script base
 ADD https://github.com/itsbcit/docker-entrypoint/releases/download/v1.5/docker-entrypoint.tar.gz /docker-entrypoint.tar.gz

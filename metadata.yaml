@@ -1,6 +1,8 @@
 ---
 image_name: openshift-apache2-mellon
 org_name: bcit
+tags:
+  - '0.16.0'
 labels:
   maintainer: "jesse@weisner.ca, chriswood.ca@gmail.com"
   xmlsec_version: '1.2.29'
