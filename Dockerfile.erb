@@ -35,8 +35,8 @@ RUN wget https://dev.entrouvert.org/releases/lasso/lasso-<%= image.labels['lasso
  && make install
 
 RUN wget https://github.com/latchset/mod_auth_mellon/releases/download/<%= image.vars['mam_release'] %>/mod_auth_mellon-<%= image.labels['mod_auth_mellon_version'] %>.tar.gz \
- && tar xvf mod_auth_mellon-0.16.0.tar.gz \
- && cd mod_auth_mellon-0.16.0 \
+ && tar xvf mod_auth_mellon-<%= image.labels['mod_auth_mellon_version'] %>.tar.gz \
+ && cd mod_auth_mellon-<%= image.labels['mod_auth_mellon_version'] %> \
  && aclocal \
  && autoheader \
  && autoconf \
