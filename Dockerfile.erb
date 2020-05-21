@@ -62,7 +62,7 @@ RUN apk add --no-cache \
         glib \
         curl \
         libxslt \
-        libltdl
+        libltdl \
         rsync
 
 COPY --from=builder /usr/local/apache2/modules/mod_auth_mellon.so /usr/local/apache2/modules/mod_auth_mellon.so
