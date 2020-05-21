@@ -49,7 +49,7 @@ RUN wget http://authzldap.othello.ch/download/mod_authz_ldap-<%= image.labels['m
  && tar zxf mod_authz_ldap-<%= image.labels['mod_authz_ldap_version'] %>.tar.gz \
  && cd mod_authz_ldap-<%= image.labels['mod_authz_ldap_version'] %> \
  && ./configure \
-        --with-apxs2=/usr/local/apache2/bin/apxs \
+        --with-apxs=/usr/local/apache2/bin/apxs \
         --with-apr=/usr/bin/apr-1-config \
  && make \
  && make install
