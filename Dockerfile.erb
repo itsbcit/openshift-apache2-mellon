@@ -75,6 +75,7 @@ COPY 50-copy-config.sh /docker-entrypoint.d/
 RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf \
  && echo 'Include /usr/local/apache2/conf/application.conf' >> /usr/local/apache2/conf/httpd.conf \
  && /usr/local/apache2/bin/apxs -e -a -n ldap /usr/local/apache2/modules/mod_ldap.so \
+ && /usr/local/apache2/bin/apxs -e -a -n auth_mellon /usr/local/apache2/modules/mod_auth_mellon.so \
  && mkdir /application /config \
  && chown root:root \
         /application \
