@@ -45,6 +45,15 @@ RUN wget https://github.com/latchset/mod_auth_mellon/releases/download/<%= image
  && make \
  && make install
 
+RUN wget http://authzldap.othello.ch/download/mod_authz_ldap-<%= image.labels['mod_authz_ldap_version'] %>.tar.gz \
+ && tar zxf mod_authz_ldap-<%= image.labels['mod_authz_ldap_version'] %>.tar.gz \
+ && cd mod_authz_ldap-<%= image.labels['mod_authz_ldap_version'] %> \
+ && ./configure \
+        --with-apxs2=/usr/local/apache2/bin/apxs \
+        --with-apr=/usr/bin/apr-1-config \
+ && make \
+ && make install
+
 FROM httpd:2.4-alpine
 
 WORKDIR /
@@ -76,6 +85,7 @@ RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf 
  && echo 'Include /usr/local/apache2/conf/application.conf' >> /usr/local/apache2/conf/httpd.conf \
  && /usr/local/apache2/bin/apxs -e -a -n ldap /usr/local/apache2/modules/mod_ldap.so \
  && /usr/local/apache2/bin/apxs -e -a -n auth_mellon /usr/local/apache2/modules/mod_auth_mellon.so \
+ && /usr/local/apache2/bin/apxs -e -a -n authz_ldap /usr/local/apache2/modules/mod_authz_ldap.so \
  && mkdir /application /config \
  && chown root:root \
         /application \
