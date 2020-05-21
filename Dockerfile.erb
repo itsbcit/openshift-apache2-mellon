@@ -3,6 +3,7 @@ FROM httpd:2.4-alpine AS builder
 WORKDIR /tmp
 
 RUN apk add --no-cache \
+        apr-dev \
         autoconf \
         automake \
         curl-dev \
