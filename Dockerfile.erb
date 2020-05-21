@@ -91,11 +91,12 @@ RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf 
  && chown root:root \
         /application \
         /usr/local/apache2/logs \
- && chmod 755 /config \
+ && chmod 775 /application \
  && chown -R root:root /usr/local/apache2 \
  && find /usr/local/apache2/conf -type d -exec chmod 0775 {} \; \
  && find /usr/local/apache2/conf -type f -exec chmod 0664 {} \;
 
+VOLUME /application
 WORKDIR /application
 
 EXPOSE 8080
