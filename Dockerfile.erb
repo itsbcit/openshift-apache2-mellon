@@ -87,7 +87,7 @@ RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf 
  && /usr/local/apache2/bin/apxs -e -a -n ldap /usr/local/apache2/modules/mod_ldap.so \
  && /usr/local/apache2/bin/apxs -e -a -n auth_mellon /usr/local/apache2/modules/mod_auth_mellon.so \
  && /usr/local/apache2/bin/apxs -e -a -n authz_ldap /usr/local/apache2/modules/mod_authz_ldap.so \
- && mkdir /application /config \
+ && mkdir /application \
  && chown root:root \
         /application \
         /config \
