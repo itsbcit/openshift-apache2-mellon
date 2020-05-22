@@ -8,7 +8,6 @@ labels:
   xmlsec_version: '1.2.29'
   lasso_version: '2.5.1'
   mod_auth_mellon_version: '0.16.0'
-  mod_authz_ldap_version: '0.30'
 vars:
   tini_version: '0.18.0'
   de_version: '1.5'

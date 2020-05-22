@@ -3,7 +3,6 @@ FROM httpd:2.4-alpine AS builder
 WORKDIR /tmp
 
 RUN apk add --no-cache \
-        apr-dev \
         autoconf \
         automake \
         curl-dev \
@@ -45,20 +44,12 @@ RUN wget https://github.com/latchset/mod_auth_mellon/releases/download/v0_16_0/m
  && make \
  && make install
 
-RUN wget http://authzldap.othello.ch/download/mod_authz_ldap-0.30.tar.gz \
- && tar zxf mod_authz_ldap-0.30.tar.gz \
- && cd mod_authz_ldap-0.30 \
- && ./configure \
-        --with-apxs=/usr/local/apache2/bin/apxs \
-        --with-apr=/usr/bin/apr-1-config \
- && make \
- && make install
-
 FROM httpd:2.4-alpine
 
 WORKDIR /
 
 RUN apk add --no-cache \
+        apr \
         glib \
         curl \
         libxslt \
@@ -68,7 +59,6 @@ RUN apk add --no-cache \
 COPY --from=builder /usr/local/apache2/modules/mod_auth_mellon.so /usr/local/apache2/modules/mod_auth_mellon.so
 COPY --from=builder /usr/local/lib/liblasso* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libxmlsec1* /usr/local/lib/
-COPY --from=builder /usr/local/apache2/modules/mod_authz_ldap.so /usr/local/apache2/modules/mod_authz_ldap.so
 COPY application.conf /usr/local/apache2/conf/application.conf
 
 LABEL maintainer="jesse@weisner.ca, chriswood.ca@gmail.com"
@@ -76,7 +66,8 @@ LABEL xmlsec_version="1.2.29"
 LABEL lasso_version="2.5.1"
 LABEL mod_auth_mellon_version="0.16.0"
 LABEL mod_authz_ldap_version="0.30"
-LABEL build_id="1590103717"
+LABEL apr_version="1.7.0"
+LABEL build_id="1590189388"
 
 # Add docker-entrypoint script base
 ADD https://github.com/itsbcit/docker-entrypoint/releases/download/v1.5/docker-entrypoint.tar.gz /docker-entrypoint.tar.gz
@@ -107,7 +98,6 @@ RUN perl -pi -e 's/^Listen 80$/Listen 8080/' /usr/local/apache2/conf/httpd.conf 
  && echo 'Include /usr/local/apache2/conf/application.conf' >> /usr/local/apache2/conf/httpd.conf \
  && /usr/local/apache2/bin/apxs -e -a -n ldap /usr/local/apache2/modules/mod_ldap.so \
  && /usr/local/apache2/bin/apxs -e -a -n auth_mellon /usr/local/apache2/modules/mod_auth_mellon.so \
- && /usr/local/apache2/bin/apxs -e -a -n authz_ldap /usr/local/apache2/modules/mod_authz_ldap.so \
  && mkdir /application \
  && chown root:root \
         /application \
